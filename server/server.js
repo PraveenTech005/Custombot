@@ -27,7 +27,11 @@ async function getInternalLinksPuppeteer(baseUrl, maxPages = 10) {
   const baseDomain = new URL(baseUrl).origin;
   const contents = [];
 
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+
   const page = await browser.newPage();
 
   await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
