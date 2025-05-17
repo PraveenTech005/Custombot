@@ -13,24 +13,23 @@ const App = () => {
   const handleSend = async () => {
     const newchat = { query: chatInp.query };
     const updatedChat = [...(chatItem || []), newchat];
-    setChatItem(updatedChat); 
+    setChatItem(updatedChat); // Show user query instantly
     const tempChatInp = chatInp;
     setChatInp({ ...chatInp, query: "" });
 
     try {
-      const res = await axios.post(
-        import.meta.env.VITE_BACKEND_API,
-        tempChatInp
-      );
+      // const res = await axios.post( import.meta.env.VITE_BACKEND_API, tempChatInp);
+      const res = await axios.post("http://localhost:4000/chat", tempChatInp);
       const reply = res.data.reply;
 
+      // Create a new array with the last item updated
       const updatedWithReply = [...updatedChat];
       updatedWithReply[updatedWithReply.length - 1] = {
         ...updatedWithReply[updatedWithReply.length - 1],
         reply,
       };
 
-      setChatItem(updatedWithReply);
+      setChatItem(updatedWithReply); // Trigger re-render with reply
     } catch (error) {
       console.error("❌ Error:", error);
 
