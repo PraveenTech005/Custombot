@@ -5,9 +5,9 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 WORKDIR /usr/src/app
 
-COPY server/package*.json ./ 
+COPY package*.json ./
 RUN npm install
 
-COPY server .
+COPY . .
 
-CMD [ "node", "server.js" ]
+CMD ["node", "server.js"]

@@ -90,6 +90,10 @@ async function getInternalLinksPuppeteer(baseUrl, maxPages = 10) {
   return finalContent;
 }
 
+app.get("/", (req, res) => {
+  res.send("✅ Server is live and working.");
+});
+
 app.post("/chat", async (req, res) => {
   const { url, query, limit = 25 } = req.body;
 
