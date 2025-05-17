@@ -6,6 +6,7 @@ import { URL } from "url";
 import cors from "cors";
 
 dotenv.config();
+const port = process.env.PORT || 4000;
 
 const app = express();
 app.use(express.json());
@@ -127,6 +128,6 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(3000, "0.0.0.0", () => {
-  console.log("🚀 Server running at http://localhost:3000");
+app.listen(port, "0.0.0.0", () => {
+  console.log("🚀 Server running at Port 3000");
 });
