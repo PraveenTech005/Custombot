@@ -19,7 +19,10 @@ const App = () => {
 
     try {
       // const res = await axios.post( import.meta.env.VITE_BACKEND_API, tempChatInp);
-      const res = await axios.post("http://localhost:4000/chat", tempChatInp);
+      const res = await axios.post(
+        `http://${window.location.hostname}:4000/chat`,
+        tempChatInp
+      );
       const reply = res.data.reply;
 
       // Create a new array with the last item updated

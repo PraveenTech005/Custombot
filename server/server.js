@@ -1,6 +1,6 @@
 import express from "express";
 import { Groq } from "groq-sdk";
-import puppeteer, { executablePath } from "puppeteer";
+import puppeteer from "puppeteer";
 import dotenv from "dotenv";
 import { URL } from "url";
 import cors from "cors";
@@ -15,6 +15,7 @@ app.use(cors());
 const GROQ_KEY = process.env.GROQ_KEY;
 const groq = new Groq({ apiKey: GROQ_KEY });
 
+// In-memory cache to reduce redundant scraping (simple version)
 const cache = new Map();
 
 async function getInternalLinksPuppeteer(baseUrl, maxPages = 10) {
@@ -28,20 +29,7 @@ async function getInternalLinksPuppeteer(baseUrl, maxPages = 10) {
   const baseDomain = new URL(baseUrl).origin;
   const contents = [];
 
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--single-process",
-      "--no-zygote",
-    ],
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-  });
-
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
   await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
@@ -90,10 +78,6 @@ async function getInternalLinksPuppeteer(baseUrl, maxPages = 10) {
   return finalContent;
 }
 
-app.get("/", (req, res) => {
-  res.send("✅ Server is live and working.");
-});
-
 app.post("/chat", async (req, res) => {
   const { url, query, limit = 25 } = req.body;
 
@@ -105,7 +89,7 @@ app.post("/chat", async (req, res) => {
 
   let content = await getInternalLinksPuppeteer(url, limit);
   if (!content) {
-    content = `Website unreachable. Assume the URL was: ${url}.`;
+    content = `Website unreachable. Assume the URL was: ${url}. If you can answer the question related to the site url, answer it or ask politely to try again or later. Don't answer data other than the url site. if the query is out of the url site, tell you can't find anything in the given url scraped data`;
   }
 
   try {
@@ -114,7 +98,7 @@ app.post("/chat", async (req, res) => {
         {
           role: "system",
           content:
-            "You are a helpful assistant. Answer the user's question based on the provided website content. If you can answer the question related to the site url, answer it or ask politely to try again or later. Don't answer data other than the url site. if the query is out of the url site, tell you can't find anything in the given url scraped data.",
+            "You are a helpful assistant. Answer the user's question based on the provided website content.",
         },
         {
           role: "user",
@@ -142,5 +126,5 @@ app.post("/chat", async (req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("🚀 Server running at Port 3000");
+  console.log("🚀 Server running at 4000");
 });

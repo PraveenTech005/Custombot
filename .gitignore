@@ -5,14 +5,9 @@ dist/
 .env.*.local
 *.log
 
-# Client (Vite/React)
-client/node_modules/
-client/dist/
-client/.env
-client/.env.local
-client/.env.production
-client/.env.development
-client/.vite
+.env.production
+.env.development
+.vite
 
 # Server (Node/Express)
 server/node_modules/
